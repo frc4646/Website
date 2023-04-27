@@ -1,0 +1,13 @@
+{
+  "name": "robertchat",
+  "version": "0.0.1",
+  "description": "my first socket.io app",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "dotenv": "^16.0.3"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body style="text-align:center">
+    <h1>Edit users</h1>
+    <h2>User ~ Password ~ Unique ID ^</h2>
+    <textarea id="currUsers" style="width:95%"></textarea><br>
+    <button onclick="update()">Update</button>
+    <br><br><a href="mailto:robert@rbrt.us">Help</a>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var userid = document.cookie.split(";")[0].split("=")[1]
+      var username = document.cookie.split(";")[1].split("=")[1]
+      var socket = io();
+      socket.emit('getUsers',userid,username)
+      function update(){
+        socket.emit('newUsers',document.getElementById("currUsers").value,userid,username)
+      }
+      
+      socket.on('gotUsers', (users,userid,username) => {
+        document.getElementById("currUsers").value = users
+      })
+    </script>
+  </body>
+</html>

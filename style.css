@@ -1,0 +1,103 @@
+/* Info to know
+min(number,number)
+- first number is in pt
+- second number is pt/4.8
+
+*/
+/*Google Fonts*/
+/*Press Start 2P*/ @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/*Overpass*/       @import url('https://fonts.googleapis.com/css2?family=Overpass&family=Press+Start+2P&display=swap');
+/*Roboto Mono*/    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
+/*Other fonts*/
+@font-face{
+  font-family:'Asgaard Base';
+  src: url('https://cdn.glitch.global/49e33c29-7598-4097-8641-ce504370cf7a/Asgaard-Base.ttf?v=168222');
+}
+@font-face{
+  font-family:'Beckman Heavy';
+  src: url('https://cdn.glitch.global/49e33c29-7598-4097-8641-ce504370cf7a/beckman-heavy.otf?v=1682220596874');
+}
+
+body{
+  background-color: #444444;
+  text-align:center;
+}
+/*Logo styling*/
+.wildcard{
+  font-family:'Asgaard Base' ,serif;
+  margin-bottom:0;
+  margin-top:-.5em;
+  color:red;
+  -webkit-text-stroke: .2vw white; /*Displays different on chrome and firefox - fix with text-shadow*/
+  font-size:min(96pt,20vw);
+}
+.robotics{
+  font-family:'Beckman Heavy' ,sans-serif;
+  margin-top:0;
+  margin-bottom:0;
+  color:white;
+  font-size:min(48pt,10vw);
+  padding-left:min(20px,4.16vw);
+}
+.logo{
+  width:min(120pt,25vw);
+  height:min(120pt,25vw);
+  margin-top:-.5em;
+}
+
+/*Small logo - divided by 3*/
+.SMwildcard{
+  font-family:'Asgaard Base' ,serif;
+  margin-bottom:0;
+  margin-top:-.5em;
+  color:red;
+  -webkit-text-stroke: .066vw white; /*Displays different on chrome and firefox - fix with text-shadow*/
+  font-size:min(32pt,6.66vw);
+}
+.SMrobotics{
+  font-family:'Beckman Heavy' ,sans-serif;
+  margin-top:0;
+  margin-bottom:0;
+  color:white;
+  font-size:min(16pt,3.33vw);
+  padding-left:min(6.66px,1.3866vw);
+}
+.SMlogo{
+  width:min(40pt,8.33vw);
+  height:min(40pt,8.33vw);
+  margin-top:-.5em;
+}
+
+/*Other things*/
+hr{
+  /*color:red; /*Displays right on firefox but wrong on chrome*/
+  height: 2px;
+  border: none;
+  background: red;
+  margin:0;
+}
+.links{
+  color:white;
+  font-family:'Beckman Heavy',sans-serif;
+  font-size:min(15pt,5vw);
+  line-height:min(30pt,10vw)
+}
+.links > span{
+  color:red;
+}
+a{
+  color:white;
+  transition:.2s
+}
+a:hover{
+  color:#999999;
+}
+.bottombox{
+  font-family:'Beckman Heavy',sans-serif;
+  color:white;
+  font-size:min(15pt,5vw);
+  display:flex;
+}
+@media (max-width: 750px)  {
+  .bottombox{display:none}
+}

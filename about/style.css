@@ -1,0 +1,6 @@
+p,a{
+  font-family:'Beckman Heavy' ,sans-serif;
+  font-size: min(16pt,3.33vw);
+  color:white
+}
+a{color:red}

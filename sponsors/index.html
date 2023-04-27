@@ -10,10 +10,26 @@
     <!--Styling and scripts-->
     <link rel="stylesheet" href="/style.css" />
     <script src="/main.js" defer></script>
+    <style>
+      .member{
+       margin:0; 
+      }
+      table,td,th{
+        border: 1px solid red;
+        
+      }
+      table{
+        margin-left: auto;
+        margin-right: auto;
+        width:85vw
+      }
+      td{
+        width:20vw
+      }
+    </style>
   </head>
   <body>
     <script>0; //This is here to stop flash loading</script>
-
     <div style="display:inline-block">
       <a href="/" style="display: flex; width:auto; text-decoration: none; align-items: center; justify-content: center">
         <div>
@@ -25,59 +41,39 @@
         </div>
       </a>
     </div>
-    
     <hr>
-    <div class="links">
-      <a href="/about">About</a> <!--Links list-->
-      <span>&nbsp;&nbsp;&nbsp;♣&nbsp;&nbsp;&nbsp;</span>
-      <a href="/history">History</a>
-      <span>&nbsp;&nbsp;&nbsp;♦&nbsp;&nbsp;&nbsp;</span>
-      <a href="/members">Members</a>
-      <span>&nbsp;&nbsp;&nbsp;♥&nbsp;&nbsp;&nbsp;</span>
-      <a href="/images">Images</a>
-      <span>&nbsp;&nbsp;&nbsp;♠&nbsp;&nbsp;&nbsp;</span>
-      <a href="/sponsors">Sponsors</a>
+    <h1 class="robotics">SPONSORS</h1>
+    <br><br><br>
+    
+    <!--Example sponsor-->
+    <!--
+    <div style="display:inline-block"> 
+      <a href="/" style="display: flex; width:auto; text-decoration: none; align-items: center; justify-content: center">
+        <div>
+          <img class="logo" src="https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2Fillustration.svg?v=1618177344016"/>
+        </div>
+        <div>
+          <p class="robotics">Line 1/p>
+          <p class="robotics">Line 2</p>
+        </div>
+      </a>
     </div>
-    <hr><br><br>
+    <br><br><br>
+    -->
+    <div style="display:inline-block"> 
+      <a href="/" style="display: flex; width:auto; text-decoration: none; align-items: center; justify-content: center">
+        <div>
+          <img class="logo" src="https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2Fillustration.svg?v=1618177344016"/>
+        </div>
+        <div>
+          <p class="robotics">Line 1</p>
+          <p class="robotics">Line 2</p>
+        </div>
+      </a>
+    </div>
+    <br><br><br>
     
-    <!--Instagram embed-->
-    <iframe class="embeds" style=";overflow:hidden;border:0;" src="https://www.instagram.com/team4646/embed" scrolling="no"></iframe>
-    <!--Twitter embed - Not here because I don't think they use it any more-->
-    <div style="display:inline-flex;" class="spacer"></div><!--Spacer-->
-    <!--thebluealliance embed-->
-    <iframe class="embeds2" style="border:0; " src="https://www.thebluealliance.com/team/4646" scrolling="yes"></iframe>
-    <style>
-      /*This is here because it is specific to this page*/
-    .embeds{
-      width:40vw;
-      height:40vw;
-    }
-    .embeds2{
-      width:50vw;
-      height:40vw;
-    }
-    .spacer{
-      width:2vw;
-    }
-    @media (max-width: 600px)  { /*Make it wider for phones*/
-      .embeds{
-        width:90vw;
-        height:90vw;
-      }
-      .embeds2{
-        width:90vw;
-        height:90vw;
-      }
-      .spacer{
-        width:0;
-      }
-      }
-    </style>
-    
-    <!--Random image for the LOLs-->
-    <br><br>
-    
-    
+
     
     <!--Bottom bar-->
     <br><br><hr>
@@ -124,10 +120,6 @@
       <span>H<br>M</span>
       <div style="width:1vw;"></div> <!--Spacer-->
       <span id="updatedMIN">UNKNOWN</span>
-      
-      
-      <!--<div style="width:2vw;"></div> <!--Spacer-->  
-      <!--<div style="width:1vw; border-left:2px solid red"></div> <!--Vertical line-->
-    </div>
+    </div> 
   </body>
 </html>

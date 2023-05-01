@@ -8,6 +8,7 @@ min(number,number)
 /*Press Start 2P*/ @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 /*Overpass*/       @import url('https://fonts.googleapis.com/css2?family=Overpass&family=Press+Start+2P&display=swap');
 /*Roboto Mono*/    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
+/*Roboto Slab*/    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 /*Other fonts*/
 @font-face{
   font-family:'Asgaard Base';
@@ -21,52 +22,35 @@ min(number,number)
 body{
   background-color: #444444;
   text-align:center;
-}
-/*Logo styling*/
-.wildcard{
-  font-family:'Asgaard Base' ,serif;
-  margin-bottom:0;
-  margin-top:-.5em;
-  color:red;
-  -webkit-text-stroke: .2vw white; /*Displays different on chrome and firefox - fix with text-shadow*/
-  font-size:min(96pt,20vw);
-}
-.robotics{
-  font-family:'Beckman Heavy' ,sans-serif;
-  margin-top:0;
-  margin-bottom:0;
-  color:white;
-  font-size:min(48pt,10vw);
-  padding-left:min(20px,4.16vw);
-}
-.logo{
-  width:min(120pt,25vw);
-  height:min(120pt,25vw);
-  margin-top:-.5em;
+  margin:0;
 }
 
-/*Small logo - divided by 3*/
-.SMwildcard{
-  font-family:'Asgaard Base' ,serif;
-  margin-bottom:0;
-  margin-top:-.5em;
-  color:red;
-  -webkit-text-stroke: .066vw white; /*Displays different on chrome and firefox - fix with text-shadow*/
-  font-size:min(32pt,6.66vw);
+.bottom{
+  border:none;
+  width:100vw;
+  margin:0;
+  bottom:0;
+  padding:0;
+  max-width:100%;
+  position: fixed;
+  left: 0;
+  height:78px;
+  overflow:hidden;
+
 }
-.SMrobotics{
-  font-family:'Beckman Heavy' ,sans-serif;
-  margin-top:0;
-  margin-bottom:0;
-  color:white;
-  font-size:min(16pt,3.33vw);
-  padding-left:min(6.66px,1.3866vw);
+.top{
+  width:100vw;
+  max-width:100%;
+  height:230px;
+  border:none;
+  margin:0;
+  padding:0;
 }
-.SMlogo{
-  width:min(40pt,8.33vw);
-  height:min(40pt,8.33vw);
-  margin-top:-.5em;
+@media (max-width: 750px)  {
+  .bottom{display:none}
 }
+
+
 
 /*Other things*/
 hr{
@@ -76,28 +60,21 @@ hr{
   background: red;
   margin:0;
 }
-.links{
-  color:white;
+h1{
   font-family:'Beckman Heavy',sans-serif;
-  font-size:min(15pt,5vw);
-  line-height:min(30pt,10vw)
-}
-.links > span{
   color:red;
+  font-size:60pt;
+  margin:0;
 }
+p,a,span{
+  font-family:'Roboto Slab',sans-serif;
+  color:white;
+}
+
 a{
   color:white;
   transition:.2s
 }
 a:hover{
   color:#999999;
-}
-.bottombox{
-  font-family:'Beckman Heavy',sans-serif;
-  color:white;
-  font-size:min(15pt,5vw);
-  display:flex;
-}
-@media (max-width: 750px)  {
-  .bottombox{display:none}
 }

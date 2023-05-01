@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="The hub for RobertTBS" />
+  <head>
+    <title> </title>
+    <!--Preload-->
+    <link rel="preload" href="/style.css" as="style" />
+    <link rel="preload" href="/main.js" as="script" />
+    <!--Styling and scripts-->
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/main.js" defer></script>
+    <style>
+    .wildcard{
+      font-family:'Asgaard Base' ,serif;
+      margin-bottom:0;
+      margin-top:-.5em;
+      color:red;
+      -webkit-text-stroke: .2vw white; /*Displays different on chrome and firefox - fix with text-shadow*/
+      font-size:min(96pt,20vw);
+    }
+    .robotics{
+      font-family:'Beckman Heavy' ,sans-serif;
+      margin-top:0;
+      margin-bottom:0;
+      color:white;
+      font-size:min(48pt,10vw);
+      padding-left:min(20px,4.16vw);
+    }
+    .logo{
+      width:min(120pt,25vw);
+      height:min(120pt,25vw);
+      margin-top:-.5em;
+    }
+    .links{
+      color:white;
+      font-family:'Beckman Heavy',sans-serif;
+      font-size:min(15pt,5vw);
+      line-height:min(30pt,10vw)
+    }
+    .links > span{
+      color:red;
+      font-family:'Beckman Heavy',sans-serif;
+    }
+      .links > a{
+        font-family:'Beckman Heavy',sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <script>0; //This is here to stop flash loading</script>
+    <div style="display:inline-block">
+      <a href="/" style="display: flex; width:auto; text-decoration: none; align-items: center; justify-content: center" target="_parent">
+        <div>
+          <img class="logo" src="https://cdn.glitch.global/49e33c29-7598-4097-8641-ce504370cf7a/Withfade.png?v=1682230418206"/>
+        </div>
+        <div>
+          <p class="wildcard">Wildcar&#xF003;</p>
+          <p class="robotics">Robotics</p>
+        </div>
+      </a>
+    </div>
+    
+    <hr>
+    <div class="links">
+      <a href="/about" target="_parent" class="beck">About</a> <!--Links list-->
+      <span>&nbsp;&nbsp;&nbsp;♣&nbsp;&nbsp;&nbsp;</span>
+      <a href="/history" target="_parent" class="beck">History</a>
+      <span>&nbsp;&nbsp;&nbsp;♦&nbsp;&nbsp;&nbsp;</span>
+      <a href="/contact" target="_parent" class="beck">Contact</a>
+      <span>&nbsp;&nbsp;&nbsp;♥&nbsp;&nbsp;&nbsp;</span>
+      <a href="/images" target="_parent" class="beck">Images</a>
+      <span>&nbsp;&nbsp;&nbsp;♠&nbsp;&nbsp;&nbsp;</span>
+      <a href="/sponsors" target="_parent" class="beck">Sponsors</a>
+    </div>
+    <hr>
+    <br>
+  </body>
+</html>

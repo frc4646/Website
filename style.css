@@ -12,11 +12,11 @@ min(number,number)
 /*Other fonts*/
 @font-face{
   font-family:'Asgaard Base';
-  src: url('https://cdn.glitch.global/49e33c29-7598-4097-8641-ce504370cf7a/Asgaard-Base.ttf?v=168222');
+  src: url('https://cdn.glitch.com/49e33c29-7598-4097-8641-ce504370cf7a/Asgaard-Base.ttf?v=168222');
 }
 @font-face{
   font-family:'Beckman Heavy';
-  src: url('https://cdn.glitch.global/49e33c29-7598-4097-8641-ce504370cf7a/beckman-heavy.otf?v=1682220596874');
+  src: url('https://cdn.glitch.com/49e33c29-7598-4097-8641-ce504370cf7a/beckman-heavy.otf?v=1682220596874');
 }
 
 body{
@@ -34,7 +34,7 @@ body{
   max-width:100%;
   position: fixed;
   left: 0;
-  height:78px;
+  height:62px;
   overflow:hidden;
 
 }

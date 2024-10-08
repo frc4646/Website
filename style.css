@@ -63,7 +63,13 @@ hr{
 h1{
   font-family:'Beckman Heavy',sans-serif;
   color:red;
-  font-size:60pt;
+  font-size:50pt;
+  margin:0;
+}
+h2{
+  font-family:'Beckman Heavy',sans-serif;
+  color:red;
+  font-size:32pt;
   margin:0;
 }
 p,a,span{

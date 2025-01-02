@@ -60,6 +60,14 @@ hr{
   background: red;
   margin:0;
 }
+hr.season {
+  /*color:red; /*Displays right on firefox but wrong on chrome*/
+  height: 2px;
+  border: none;
+  background: red;
+  margin:15px auto;
+  width:50%;
+}
 h1{
   font-family:'Beckman Heavy',sans-serif;
   color:red;

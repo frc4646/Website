@@ -1,94 +1,510 @@
-/* Info to know
-min(number,number)
-- first number is in pt
-- second number is pt/4.8
+/*CSS*/
 
-*/
-/*Google Fonts*/
-/*Press Start 2P*/ @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-/*Overpass*/       @import url('https://fonts.googleapis.com/css2?family=Overpass&family=Press+Start+2P&display=swap');
-/*Roboto Mono*/    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
-/*Roboto Slab*/    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
-/*Other fonts*/
-@font-face{
-  font-family:'Asgaard Base';
-  src: url('https://cdn.glitch.com/49e33c29-7598-4097-8641-ce504370cf7a/Asgaard-Base.ttf?v=168222');
-}
-@font-face{
-  font-family:'Beckman Heavy';
-  src: url('https://cdn.glitch.com/49e33c29-7598-4097-8641-ce504370cf7a/beckman-heavy.otf?v=1682220596874');
-}
+/*.....................................................................*/
+/*.........__..__..______..__.....__......______.......................*/
+/*.........||..||..||......||.....||.....||....||......................*/
+/*.........||__||..||____..||.....||.....||....||......................*/
+/*.........||..||..||......||.....||.....||....||......................*/
+/*.........||..||..||____..||___..||___..||____||......................*/
+/*.....................................................................*/
+/*.........WILDCARD...ROBOTICS...CODE...YIPPEE!!!......................*/
 
-body{
-  background-color: #444444;
-  text-align:center;
-  margin:0;
+
+/* Global styles */
+
+body {
+  background-color: black;
+      background-image: url('images/background.gif');
+      background-repeat: repeat;
 }
 
-.bottom{
-  border:none;
-  width:100vw;
-  margin:0;
-  bottom:0;
-  padding:0;
-  max-width:100%;
+h1 {
+  font-size: 4em;
+  color: black;
+  text-align: center;
+  margin: 20px auto;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2em;
+  margin: 10px auto;
+}
+
+h3 {
+  text-align: left;
+  font-size: 2em;
+}
+
+.norm-text {
+  color: white;
+  text-align: justify;
+  font-size: 20px;
+}
+
+.h-text {
+  color: white;
+  text-align: center;
+}
+
+.h3-text {
+  color: red;
+}
+
+a {
+  color: red;
+}
+
+.border-space {
+  margin: 10px 40px 40px 40px;
+}
+
+img .art {
+  
+}
+
+.sponsors{
+  height: 100px;
+  width: auto;
+  padding:10px;
+}
+
+@media screen and (max-width: 768px) {
+  .sponsors{
+      height: 30px;
+      width: auto;
+      padding:5px;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .border-space {
+    margin: 10px 120px 120px 120px;
+    /* Larger margin for desktop */
+  }
+
+  .navbar {
+    width: 300px;
+  }
+
+  /* Shift content to the right to accommodate the navbar */
+  .content-wrapper {
+    margin-left: 200px;
+    /* Adjust content's left margin to be the width of the navbar */
+  }
+
+  footer {
+    margin-left: 200px;
+    /* Push the footer right to accommodate the navbar width */
+    width: calc(100% - 200px);
+    /* Ensure the footer takes up the remaining space */
+  }
+}
+
+/* Embeds */
+.embeds {
+    width: 100%;
+    height: auto;
+}
+
+.embeds2 {
+    width: 50vw;
+    height: 40vw;
+}
+
+.spacer {
+    width: 2vw;
+}
+
+/* Media Query for phones */
+@media (max-width: 600px) {
+    .embeds,
+    .embeds2 {
+        width: 90vw;
+        height: 90vw;
+    }
+
+    .spacer {
+        width: 0;
+    }
+}
+
+/* Responsive Embed Container */
+.embed-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    margin-bottom: 20px;
+}
+
+.embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Instagram Specific Styling */
+.embeds {
+    width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .embed-container {
+        padding-bottom: 100%; /* Square aspect ratio for mobile */
+    }
+
+    .embeds {
+        width: 100%;
+        height: 100%;
+    }
+}
+/* The burger icon */
+.burger-menu {
+  width: 30px;
+  height: 25px;
+  display: none;
+  /* Hide by default on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.burger-line {
+  width: 100%;
+  height: 5px;
+  background-color: white;
+}
+
+/* Vertical Navbar */
+.navbar {
   position: fixed;
+  top: 0;
   left: 0;
-  height:62px;
-  overflow:hidden;
-
-}
-.top{
-  width:100vw;
-  max-width:100%;
-  height:230px;
-  border:none;
-  margin:0;
-  padding:0;
-}
-@media (max-width: 750px)  {
-  .bottom{display:none}
+  /* Keep the navbar always on the left */
+  height: 100%;
+  width: 200px;
+  /*20% */
+  background-color: #333;
+  transition: none;
+  /* No transition needed for desktop */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  z-index: 9999;
 }
 
+/* Hide the scrollbar */
+.navbar::-webkit-scrollbar {
+  width: 0;
+  /* Hides the scrollbar */
+  height: 0;
+}
+
+/* Navbar list styling */
+.navbar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  /* Ensure it fits within the navbar */
+}
+
+/* Navbar list item styling */
+.navbar li {
+  text-align: center;
+  padding: 15px;
+}
+
+.navbar li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  display: block;
+}
+
+/* Active navbar state (for mobile) */
+.navbar.active {
+  left: 0;
+  /* Show navbar when burger menu is clicked */
+}
+
+/* Active link state (for mobile or desktop) */
+.navbar li a.active {
+  color: white;
+  /* Active link turns white */
+}
+
+/* Content wrapper - adjusts the position of the content */
+.content-wrapper {
+  transition: margin-left 0.3s ease;
+  padding-left: 20px;
+  /* Add padding on the left for better appearance */
+}
+
+/* Media Queries for small screens (mobile) */
+@media screen and (max-width: 768px) {
+
+  /* Show burger menu on mobile */
+  .burger-menu {
+    display: flex;
+  }
+
+  /* Navbar slides in when active */
+  .navbar.active {
+    left: 0;
+  }
+
+  /* Navbar off-screen by default on mobile */
+  .navbar {
+    left: -200px;
+  }
+
+  /* Stack links vertically on mobile */
+  .navbar ul {
+    flex-direction: column;
+  }
+
+  /* Content takes full width on mobile */
+  .content-wrapper {
+    margin-left: 0;
+  }
+
+  h1 {
+    font-size: 250%;
+    color: black;
+    text-align: center;
+  }
+
+  .header-img {
+    size: 50%;
+  }
+
+  .norm-text {
+    color: white;
+    text-align: justify;
+    font-size: 15px;
+  }
+
+  .h3-text {
+    size: 2em;
+    color: red;
+  }
+}
+
+/* Media Queries for large screens (desktop) */
+@media screen and (min-width: 769px) {
+
+  /* Hide burger menu on desktop */
+  .burger-menu {
+    display: none;
+  }
+
+  /* Navbar always visible on desktop */
+  .navbar {
+    left: 0;
+    transition: none;
+    /* No sliding transition */
+  }
+
+  /* Stack links vertically on desktop */
+  .navbar ul {
+    flex-direction: column;
+  }
+
+  /* Shift content to the right on desktop */
+  .content-wrapper {
+    margin-left: 200px;
+  }
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* Aspect ratio 16:9 */
+  height: 0;
+  overflow: hidden;
+  z-index: 1;
+  max-width: 100%;
+  /* Ensure it fits the screen */
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Default footer (centered) */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.9em;
+  color: white;
+  width: 100%;
+}
+
+/* Media Queries for large screens (desktop) */
+@media screen and (min-width: 769px) {
+  footer {
+    margin-left: 200px;
+    /* Push the footer right to accommodate the navbar width */
+    text-align: center;
+    /* Keep the text centered */
+    width: calc(100% - 200px);
+    /* Ensure the footer takes up the remaining space */
+  }
+}
 
 
-/*Other things*/
-hr{
-  /*color:red; /*Displays right on firefox but wrong on chrome*/
-  height: 2px;
+/* Image styling */
+img {
+  width: 100%;
+  height: auto;
+}
+
+/* Links Section */
+.links-section {
+  margin-bottom: 30px;
+}
+
+.links-section h2 {
+  text-align: center;
+  font-size: 5em;
+  color: red;
+  margin-bottom: 10px;
+}
+
+.links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 0;
+  font-size: 2.5em;
+  justify-content: center;
+  /* Center the buttons */
+}
+
+.link-button {
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 3px;
+  text-align: center;
   border: none;
-  background: red;
-  margin:0;
-}
-hr.season {
-  /*color:red; /*Displays right on firefox but wrong on chrome*/
-  height: 2px;
-  border: none;
-  background: red;
-  margin:15px auto;
-  width:50%;
-}
-h1{
-  font-family:'Beckman Heavy',sans-serif;
-  color:red;
-  font-size:50pt;
-  margin:0;
-}
-h2{
-  font-family:'Beckman Heavy',sans-serif;
-  color:red;
-  font-size:32pt;
-  margin:0;
-}
-p,a,span{
-  font-family:'Roboto Slab',sans-serif;
-  color:white;
+  /* Remove default button border */
+  cursor: pointer;
+  /* Change cursor to pointer */
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-a{
-  color:white;
-  transition:.2s
+.link-button:hover {
+  background-color: red;
+  transform: scale(1.05);
 }
-a:hover{
-  color:#999999;
+
+.container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  /* Maintains a square aspect ratio */
+  overflow: hidden;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* Makes the gallery responsive */
+  gap: 20px;
+  /* Adds space between the images */
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  /* Maintains a square aspect ratio */
+  overflow: hidden;
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 25px;
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: 0.5s ease;
+}
+
+.container:hover .overlay {
+  opacity: 1;
+}
+
+
+.bean:hover {
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+
+  /*10% { transform: translate(-1px, -2px) rotate(-1deg); }*/
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+
+  /*30% { transform: translate(3px, 2px) rotate(0deg); }*/
+  /*40% { transform: translate(1px, -1px) rotate(1deg); }*/
+  45% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+
+  /*60% { transform: translate(-3px, 1px) rotate(0deg); }*/
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+
+  /*90% { transform: translate(1px, 2px) rotate(0deg); }*/
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
 }

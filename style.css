@@ -10,36 +10,30 @@
 /*.........WILDCARD...ROBOTICS...CODE...YIPPEE!!!......................*/
 
 
-/* Global styles */
-
+/*================== Global Styles ==================*/
 body {
   background-color: black;
-      background-image: url('images/background.gif');
-      background-repeat: repeat;
 }
 
+h1, h2, h3 {
+  text-align: center;
+  color: black;
+}
 h1 {
   font-size: 4em;
-  color: black;
-  text-align: center;
-  margin: 20px auto;
 }
-
 h2 {
-  text-align: center;
-  font-size: 2em;
-  margin: 10px auto;
+  font-size: 110%;
 }
-
 h3 {
-  text-align: left;
   font-size: 2em;
+  text-align: left;
 }
 
 .norm-text {
   color: white;
   text-align: justify;
-  font-size: 20px;
+  font-size: 125%;
 }
 
 .h-text {
@@ -56,8 +50,14 @@ a {
 }
 
 .border-space {
-  margin: 10px 40px 40px 40px;
+  margin: 10px 40px 40px;
 }
+
+img {
+  width: 100%;
+  height: auto;
+}
+
 
 img .art {
   
@@ -69,271 +69,28 @@ img .art {
   padding:10px;
 }
 
-@media screen and (max-width: 768px) {
-  .sponsors{
-      height: 30px;
-      width: auto;
-      padding:5px;
-  }
-}
-
-@media screen and (min-width: 769px) {
-  .border-space {
-    margin: 10px 120px 120px 120px;
-    /* Larger margin for desktop */
-  }
-
-  .navbar {
-    width: 300px;
-  }
-
-  /* Shift content to the right to accommodate the navbar */
-  .content-wrapper {
-    margin-left: 200px;
-    /* Adjust content's left margin to be the width of the navbar */
-  }
-
-  footer {
-    margin-left: 200px;
-    /* Push the footer right to accommodate the navbar width */
-    width: calc(100% - 200px);
-    /* Ensure the footer takes up the remaining space */
-  }
-}
-
-/* Embeds */
-.embeds {
-    width: 100%;
-    height: auto;
-}
-
-.embeds2 {
-    width: 50vw;
-    height: 40vw;
-}
-
-.spacer {
-    width: 2vw;
-}
-
-/* Media Query for phones */
-@media (max-width: 600px) {
-    .embeds,
-    .embeds2 {
-        width: 90vw;
-        height: 90vw;
-    }
-
-    .spacer {
-        width: 0;
-    }
-}
-
-/* Responsive Embed Container */
-.embed-container {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
-    overflow: hidden;
-    max-width: 100%;
-    background: #000;
-    margin-bottom: 20px;
-}
-
-.embed-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* Instagram Specific Styling */
-.embeds {
-    width: 100%;
-    height: auto;
-}
-
-@media (max-width: 768px) {
-    .embed-container {
-        padding-bottom: 100%; /* Square aspect ratio for mobile */
-    }
-
-    .embeds {
-        width: 100%;
-        height: 100%;
-    }
-}
-/* The burger icon */
-.burger-menu {
-  width: 30px;
-  height: 25px;
-  display: none;
-  /* Hide by default on desktop */
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  margin: 10px;
-}
-
-.burger-line {
-  width: 100%;
-  height: 5px;
-  background-color: white;
-}
-
-/* Vertical Navbar */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  /* Keep the navbar always on the left */
-  height: 100%;
-  width: 200px;
-  /*20% */
-  background-color: #333;
-  transition: none;
-  /* No transition needed for desktop */
-  overflow-y: auto;
-  /* Enable vertical scrolling */
-  z-index: 9999;
-}
-
-/* Hide the scrollbar */
-.navbar::-webkit-scrollbar {
-  width: 0;
-  /* Hides the scrollbar */
-  height: 0;
-}
-
-/* Navbar list styling */
-.navbar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
-  /* Ensure it fits within the navbar */
-}
-
-/* Navbar list item styling */
-.navbar li {
-  text-align: center;
-  padding: 15px;
-}
-
-.navbar li a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  display: block;
-}
-
-/* Active navbar state (for mobile) */
-.navbar.active {
-  left: 0;
-  /* Show navbar when burger menu is clicked */
-}
-
-/* Active link state (for mobile or desktop) */
-.navbar li a.active {
-  color: white;
-  /* Active link turns white */
-}
-
-/* Content wrapper - adjusts the position of the content */
+/*================== Content & Layout ==================*/
 .content-wrapper {
   transition: margin-left 0.3s ease;
   padding-left: 20px;
-  /* Add padding on the left for better appearance */
 }
 
-/* Media Queries for small screens (mobile) */
-@media screen and (max-width: 768px) {
-
-  /* Show burger menu on mobile */
-  .burger-menu {
-    display: flex;
-  }
-
-  /* Navbar slides in when active */
-  .navbar.active {
-    left: 0;
-  }
-
-  /* Navbar off-screen by default on mobile */
-  .navbar {
-    left: -200px;
-  }
-
-  /* Stack links vertically on mobile */
-  .navbar ul {
-    flex-direction: column;
-  }
-
-  /* Content takes full width on mobile */
-  .content-wrapper {
-    margin-left: 0;
-  }
-
-  h1 {
-    font-size: 250%;
-    color: black;
-    text-align: center;
-  }
-
-  .header-img {
-    size: 50%;
-  }
-
-  .norm-text {
-    color: white;
-    text-align: justify;
-    font-size: 15px;
-  }
-
-  .h3-text {
-    size: 2em;
-    color: red;
-  }
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.9em;
+  color: white;
+  width: 100%;
 }
 
-/* Media Queries for large screens (desktop) */
-@media screen and (min-width: 769px) {
-
-  /* Hide burger menu on desktop */
-  .burger-menu {
-    display: none;
-  }
-
-  /* Navbar always visible on desktop */
-  .navbar {
-    left: 0;
-    transition: none;
-    /* No sliding transition */
-  }
-
-  /* Stack links vertically on desktop */
-  .navbar ul {
-    flex-direction: column;
-  }
-
-  /* Shift content to the right on desktop */
-  .content-wrapper {
-    margin-left: 200px;
-  }
-}
-
+/*================== Video ==================*/
 .video-container {
   position: relative;
   padding-bottom: 56.25%;
-  /* Aspect ratio 16:9 */
   height: 0;
   overflow: hidden;
-  z-index: 1;
   max-width: 100%;
-  /* Ensure it fits the screen */
+  z-index: 1;
 }
 
 .video-container iframe {
@@ -344,67 +101,34 @@ img .art {
   height: 100%;
 }
 
-/* Default footer (centered) */
-footer {
-  text-align: center;
-  margin-top: 40px;
-  font-size: 0.9em;
-  color: white;
-  width: 100%;
-}
-
-/* Media Queries for large screens (desktop) */
-@media screen and (min-width: 769px) {
-  footer {
-    margin-left: 200px;
-    /* Push the footer right to accommodate the navbar width */
-    text-align: center;
-    /* Keep the text centered */
-    width: calc(100% - 200px);
-    /* Ensure the footer takes up the remaining space */
-  }
-}
-
-
-/* Image styling */
-img {
-  width: 100%;
-  height: auto;
-}
-
-/* Links Section */
+/*================== Links Section ==================*/
 .links-section {
   margin-bottom: 30px;
 }
 
 .links-section h2 {
-  text-align: center;
   font-size: 5em;
   color: red;
-  margin-bottom: 10px;
 }
 
 .links-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 15px;
   padding: 0;
   font-size: 2.5em;
-  justify-content: center;
-  /* Center the buttons */
 }
 
 .link-button {
   padding: 10px 20px;
   background-color: black;
   color: white;
-  text-decoration: none;
-  border-radius: 3px;
-  text-align: center;
   border: none;
-  /* Remove default button border */
+  border-radius: 3px;
+  text-decoration: none;
+  text-align: center;
   cursor: pointer;
-  /* Change cursor to pointer */
   transition: background-color 0.3s, transform 0.3s;
 }
 
@@ -413,102 +137,66 @@ img {
   transform: scale(1.05);
 }
 
-.container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  /* Maintains a square aspect ratio */
-  overflow: hidden;
-}
-
+/*================== Gallery ==================*/
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  /* Makes the gallery responsive */
   gap: 20px;
-  /* Adds space between the images */
 }
 
 .container {
   position: relative;
   width: 100%;
-  padding-bottom: 100%;
-  /* Maintains a square aspect ratio */
   overflow: hidden;
 }
 
 .image {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto; /* Let the image control height */
+  display: block;
 }
 
 .overlay {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   font-size: 25px;
   text-align: center;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-  background-color: rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0.5);
   opacity: 0;
   transition: 0.5s ease;
+  pointer-events: none; /* Optional: ignore mouse events */
 }
-
 .container:hover .overlay {
   opacity: 1;
+  pointer-events: auto;
 }
 
+/*================== Other Stuff ==================*/
+.bean {
+  width: 65%;
+  height: auto;
+}
 
 .bean:hover {
-  animation: shake 0.5s;
-  animation-iteration-count: infinite;
+animation: shake 0.5s infinite;
 }
 
 @keyframes shake {
-  0% {
-    transform: translate(1px, 1px) rotate(0deg);
-  }
-
-  /*10% { transform: translate(-1px, -2px) rotate(-1deg); }*/
-  20% {
-    transform: translate(-3px, 0px) rotate(1deg);
-  }
-
-  /*30% { transform: translate(3px, 2px) rotate(0deg); }*/
-  /*40% { transform: translate(1px, -1px) rotate(1deg); }*/
-  45% {
-    transform: translate(1px, -1px) rotate(1deg);
-  }
-
-  50% {
-    transform: translate(-1px, 2px) rotate(-1deg);
-  }
-
-  /*60% { transform: translate(-3px, 1px) rotate(0deg); }*/
-  70% {
-    transform: translate(3px, 1px) rotate(-1deg);
-  }
-
-  80% {
-    transform: translate(-1px, -1px) rotate(1deg);
-  }
-
-  /*90% { transform: translate(1px, 2px) rotate(0deg); }*/
-  100% {
-    transform: translate(1px, -2px) rotate(-1deg);
-  }
+0% { transform: translate(1px, 1px) rotate(0deg); }
+20% { transform: translate(-3px, 0px) rotate(1deg); }
+45% { transform: translate(1px, -1px) rotate(1deg); }
+50% { transform: translate(-1px, 2px) rotate(-1deg); }
+70% { transform: translate(3px, 1px) rotate(-1deg); }
+80% { transform: translate(-1px, -1px) rotate(1deg); }
+100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
+/*===================== PDF =====================*/
 .inline_pdf {
   width: 100%;
   max-width: 100%;
@@ -558,5 +246,70 @@ img {
 @media screen and (min-width: 1025px) {
   .inline_pdf_small {
     height: 400px;
+  }
+}
+
+/*================================================*/
+/*================== Responsive ==================*/
+/*================================================*/
+
+/*================== Mobile ==================*/
+@media screen and (max-width: 768.99px) {
+    
+  .burger-menu {
+    display: flex;
+  }
+
+  .navbar {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 100%;
+      width: 100%;
+      background-color: #333;
+      overflow-y: auto;
+      z-index: 9999;
+    }
+
+  .navbar.active {
+    left: 0;
+  }
+
+  .content-wrapper {
+    margin-left: 0;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    color: black;
+  }
+  
+  h2 {
+    font-size: 120%;
+    }
+
+  .norm-text {
+    font-size: 16px;
+  }
+}
+
+/*================== Desktop ==================*/
+@media screen and (min-width: 769px) {
+  
+  .burger-menu {
+    display: none;
+  }
+
+  .navbar {
+    transition: none;
+  }
+
+  .content-wrapper {
+    margin-left: 400px;
+  }
+
+  footer {
+    margin-left: 400px;
+    width: calc(100% - 400px);
   }
 }

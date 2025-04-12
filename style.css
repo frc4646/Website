@@ -9,9 +9,8 @@
 
 /*================== Global Styles ==================*/
 body {
-  background-color: black;
-    background-image: url('images/background.gif');
-    background-repeat: repeat;
+  background-image: url('images/background.gif');
+  background-repeat: repeat;
 }
 
 h1, h2, h3 {

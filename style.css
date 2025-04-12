@@ -56,21 +56,6 @@ img {
   height: auto;
 }
 
-/* Embeds */
-.embeds {
-  width: 100%;
-  height: auto;
-}
-
-.embeds2 {
-  width: 50vw;
-  height: 40vw;
-}
-
-.spacer {
-  width: 2vw;
-}
-
 /*================== Navbar & Burger Menu ==================*/
 .burger-menu {
   width: 30px;
@@ -322,53 +307,55 @@ footer {
   }
 }
 
-/* other */
-
-/* Media Query for phones */
-@media (max-width: 600px) {
-  .embeds,
-  .embeds2 {
-      width: 90vw;
-      height: 90vw;
-  }
-
-  .spacer {
-      width: 0;
-  }
-}
-
-/* Responsive Embed Container */
-.embed-container {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
+/* embed */
+.inline_pdf {
+  width: 100%;
   max-width: 100%;
-  background: #000;
-  margin-bottom: 20px;
-}
-
-.embed-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* Instagram Specific Styling */
-.embeds {
-  width: 100%;
   height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
-@media (max-width: 768px) {
-  .embed-container {
-      padding-bottom: 100%; /* Square aspect ratio for mobile */
+@media screen and (max-width: 600px) {
+  .inline_pdf {
+    height: 400px;
   }
+}
 
-  .embeds {
-      width: 100%;
-      height: 100%;
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+  .inline_pdf {
+    height: 600px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .inline_pdf {
+    height: 800px;
+  }
+}
+
+.inline_pdf_small {
+  width: 60%;
+  max-width: 60%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+@media screen and (max-width: 600px) {
+  .inline_pdf_small {
+    height: 200px;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+  .inline_pdf_small {
+    height: 300px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .inline_pdf_small {
+    height: 400px;
   }
 }

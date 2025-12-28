@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path Merge Tool</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #1a1a1d;
+            --border: #2a2a2f;
+            --text-primary: #e8e8ea;
+            --text-secondary: #8a8a8f;
+            --accent: #e63946;
+            --accent-dim: #c1121f;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --grid-line: #1f1f23;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 280px;
+            grid-template-rows: 60px 1fr;
+            min-height: 100vh;
+            gap: 1px;
+            background: var(--border);
+        }
+
+        header {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--bg-primary);
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .header-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-left {
+            background: var(--bg-secondary);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar-right {
+            background: var(--bg-secondary);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-canvas {
+            background: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+
+        #preview-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-tertiary);
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .drop-zone-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .drop-zone-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-value.original {
+            color: var(--text-secondary);
+        }
+
+        .stat-value.merged {
+            color: var(--success);
+        }
+
+        .option-group {
+            margin-bottom: 16px;
+        }
+
+        .option-label {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            background: var(--border);
+            height: 4px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-option:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .checkbox-option input {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .checkbox-option input:checked+.checkbox-custom {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkbox-custom svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--bg-primary);
+            stroke-width: 3;
+            fill: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .checkbox-option input:checked+.checkbox-custom svg {
+            opacity: 1;
+        }
+
+        .checkbox-text {
+            font-size: 13px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-dim);
+        }
+
+        .btn-primary:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: var(--accent);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .export-section {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .format-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .format-option {
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .format-option:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .format-option.active {
+            border-color: var(--accent);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .format-option span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .file-info {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .file-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            margin-bottom: 4px;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            stroke: var(--border);
+            stroke-width: 1;
+            fill: none;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+        }
+
+        .path-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .path-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .path-item:last-child {
+            border-bottom: none;
+        }
+
+        .path-item-points {
+            color: var(--text-secondary);
+        }
+
+        .processing-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 11, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .processing-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 200;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--success);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .reduction-badge {
+            display: inline-block;
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <h1>Path<span>Merge</span></h1>
+            </div>
+            <div class="header-info" id="header-status">Ready</div>
+        </header>
+
+        <aside class="sidebar-left">
+            <div class="section">
+                <div class="section-title">Import</div>
+                <div class="drop-zone" id="drop-zone">
+                    <div class="drop-zone-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <div class="drop-zone-text">Drop file here</div>
+                    <div class="drop-zone-hint">SVG or DXF files</div>
+                </div>
+                <input type="file" id="file-input" accept=".svg,.dxf">
+            </div>
+
+            <div class="section" id="file-info-section" style="display: none;">
+                <div class="section-title">File</div>
+                <div class="file-info">
+                    <div class="file-name" id="file-name">—</div>
+                    <div class="file-size" id="file-size">—</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Options</div>
+
+                <div class="option-group">
+                    <label class="option-label">Merge Tolerance</label>
+                    <div class="slider-container">
+                        <input type="range" id="tolerance" min="0.001" max="1" step="0.001" value="0.01">
+                        <span class="slider-value" id="tolerance-value">0.01</span>
+                    </div>
+                </div>
+
+                <label class="checkbox-option">
+                    <input type="checkbox" id="close-paths" checked>
+                    <span class="checkbox-custom">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    <span class="checkbox-text">Auto-close paths</span>
+                </label>
+
+                <label class="checkbox-option">
+                    <input type="checkbox" id="remove-duplicates" checked>
+                    <span class="checkbox-custom">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    <span class="checkbox-text">Remove duplicates</span>
+                </label>
+
+                <label class="checkbox-option">
+                    <input type="checkbox" id="simplify-paths">
+                    <span class="checkbox-custom">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    <span class="checkbox-text">Simplify paths</span>
+                </label>
+            </div>
+
+            <div class="section">
+                <button class="btn btn-primary" id="process-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                    Merge Paths
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-canvas">
+            <div class="canvas-grid"></div>
+            <canvas id="preview-canvas"></canvas>
+            <div class="empty-state" id="empty-state">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                </svg>
+                <div class="empty-state-text">Import a file to preview</div>
+            </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="section">
+                <div class="section-title">Statistics</div>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Original</div>
+                        <div class="stat-value original" id="original-count">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Merged</div>
+                        <div class="stat-value merged" id="merged-count">—</div>
+                    </div>
+                </div>
+                <div class="reduction-badge" id="reduction-badge" style="display: none;">
+                    ↓ 0% reduction
+                </div>
+            </div>
+
+            <div class="section" id="paths-section" style="display: none;">
+                <div class="section-title">Merged Paths</div>
+                <div class="path-list" id="path-list"></div>
+            </div>
+
+            <div class="export-section">
+                <div class="section-title">Export</div>
+                <div class="format-select">
+                    <div class="format-option active" data-format="svg">
+                        <span>.SVG</span>
+                    </div>
+                    <div class="format-option" data-format="dxf">
+                        <span>.DXF</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" id="export-btn" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export Merged File
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <div class="processing-overlay" id="processing-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <script>
+        // State
+        let state = {
+            originalPaths: [],
+            mergedPaths: [],
+            fileName: '',
+            fileType: '',
+            exportFormat: 'svg',
+            bounds: { minX: 0, minY: 0, maxX: 100, maxY: 100 }
+        };
+
+        // DOM Elements
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const processBtn = document.getElementById('process-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const canvas = document.getElementById('preview-canvas');
+        const ctx = canvas.getContext('2d');
+        const toleranceInput = document.getElementById('tolerance');
+        const toleranceValue = document.getElementById('tolerance-value');
+
+        // File handling
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'svg' && ext !== 'dxf') {
+                showToast('Please upload an SVG or DXF file');
+                return;
+            }
+
+            state.fileName = file.name;
+            state.fileType = ext;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                if (ext === 'svg') {
+                    parseSVG(content);
+                } else {
+                    parseDXF(content);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // SVG Parser
+        function parseSVG(content) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'image/svg+xml');
+            const paths = [];
+
+            // Get viewBox or dimensions
+            const svg = doc.querySelector('svg');
+            const viewBox = svg.getAttribute('viewBox');
+            if (viewBox) {
+                const [minX, minY, width, height] = viewBox.split(/[\s,]+/).map(parseFloat);
+                state.bounds = { minX, minY, maxX: minX + width, maxY: minY + height };
+            }
+
+            // Parse path elements
+            doc.querySelectorAll('path').forEach(path => {
+                const d = path.getAttribute('d');
+                if (d) {
+                    const segments = parsePathD(d);
+                    segments.forEach(seg => paths.push(seg));
+                }
+            });
+
+            // Parse line elements
+            doc.querySelectorAll('line').forEach(line => {
+                const x1 = parseFloat(line.getAttribute('x1')) || 0;
+                const y1 = parseFloat(line.getAttribute('y1')) || 0;
+                const x2 = parseFloat(line.getAttribute('x2')) || 0;
+                const y2 = parseFloat(line.getAttribute('y2')) || 0;
+                paths.push([{ x: x1, y: y1 }, { x: x2, y: y2 }]);
+            });
+
+            // Parse polyline elements
+            doc.querySelectorAll('polyline').forEach(polyline => {
+                const points = parsePoints(polyline.getAttribute('points'));
+                if (points.length > 0) paths.push(points);
+            });
+
+            // Parse polygon elements
+            doc.querySelectorAll('polygon').forEach(polygon => {
+                const points = parsePoints(polygon.getAttribute('points'));
+                if (points.length > 0) {
+                    points.push({ ...points[0] }); // Close the polygon
+                    paths.push(points);
+                }
+            });
+
+            // Parse rect elements
+            doc.querySelectorAll('rect').forEach(rect => {
+                const x = parseFloat(rect.getAttribute('x')) || 0;
+                const y = parseFloat(rect.getAttribute('y')) || 0;
+                const w = parseFloat(rect.getAttribute('width')) || 0;
+                const h = parseFloat(rect.getAttribute('height')) || 0;
+                paths.push([
+                    { x, y }, { x: x + w, y }, { x: x + w, y: y + h }, { x, y: y + h }, { x, y }
+                ]);
+            });
+
+            // Parse circle elements (approximate with polygon)
+            doc.querySelectorAll('circle').forEach(circle => {
+                const cx = parseFloat(circle.getAttribute('cx')) || 0;
+                const cy = parseFloat(circle.getAttribute('cy')) || 0;
+                const r = parseFloat(circle.getAttribute('r')) || 0;
+                const points = [];
+                const segments = 32;
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    points.push({ x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+                }
+                paths.push(points);
+            });
+
+            // Parse ellipse elements
+            doc.querySelectorAll('ellipse').forEach(ellipse => {
+                const cx = parseFloat(ellipse.getAttribute('cx')) || 0;
+                const cy = parseFloat(ellipse.getAttribute('cy')) || 0;
+                const rx = parseFloat(ellipse.getAttribute('rx')) || 0;
+                const ry = parseFloat(ellipse.getAttribute('ry')) || 0;
+                const points = [];
+                const segments = 32;
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    points.push({ x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle) });
+                }
+                paths.push(points);
+            });
+
+            state.originalPaths = paths;
+            state.mergedPaths = [];
+            clearMergedStats();
+            setExportFormat('svg');
+            updateUI();
+            renderPreview(paths, '#8a8a8f');
+        }
+
+        function clearMergedStats() {
+            document.getElementById('merged-count').textContent = '—';
+            document.getElementById('reduction-badge').style.display = 'none';
+            document.getElementById('paths-section').style.display = 'none';
+            document.getElementById('path-list').innerHTML = '';
+            exportBtn.disabled = true;
+        }
+
+        function setExportFormat(format) {
+            state.exportFormat = format;
+            document.querySelectorAll('.format-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.format === format);
+            });
+        }
+
+        function parsePathD(d) {
+            const paths = [];
+            let currentPath = [];
+            let currentX = 0, currentY = 0;
+            let startX = 0, startY = 0;
+
+            // Tokenize the path
+            const tokens = d.match(/[a-zA-Z][^a-zA-Z]*/g) || [];
+
+            tokens.forEach(token => {
+                const cmd = token[0];
+                const args = token.slice(1).trim().split(/[\s,]+/).filter(s => s).map(parseFloat);
+
+                switch (cmd) {
+                    case 'M':
+                        if (currentPath.length > 0) paths.push(currentPath);
+                        currentPath = [];
+                        for (let i = 0; i < args.length; i += 2) {
+                            currentX = args[i];
+                            currentY = args[i + 1];
+                            currentPath.push({ x: currentX, y: currentY });
+                            if (i === 0) { startX = currentX; startY = currentY; }
+                        }
+                        break;
+                    case 'm':
+                        if (currentPath.length > 0) paths.push(currentPath);
+                        currentPath = [];
+                        for (let i = 0; i < args.length; i += 2) {
+                            currentX += args[i];
+                            currentY += args[i + 1];
+                            currentPath.push({ x: currentX, y: currentY });
+                            if (i === 0) { startX = currentX; startY = currentY; }
+                        }
+                        break;
+                    case 'L':
+                        for (let i = 0; i < args.length; i += 2) {
+                            currentX = args[i];
+                            currentY = args[i + 1];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'l':
+                        for (let i = 0; i < args.length; i += 2) {
+                            currentX += args[i];
+                            currentY += args[i + 1];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'H':
+                        for (let i = 0; i < args.length; i++) {
+                            currentX = args[i];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'h':
+                        for (let i = 0; i < args.length; i++) {
+                            currentX += args[i];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'V':
+                        for (let i = 0; i < args.length; i++) {
+                            currentY = args[i];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'v':
+                        for (let i = 0; i < args.length; i++) {
+                            currentY += args[i];
+                            currentPath.push({ x: currentX, y: currentY });
+                        }
+                        break;
+                    case 'Z':
+                    case 'z':
+                        currentPath.push({ x: startX, y: startY });
+                        currentX = startX;
+                        currentY = startY;
+                        break;
+                    // Add support for curves by linearizing them
+                    case 'C':
+                        for (let i = 0; i < args.length; i += 6) {
+                            const points = bezierToPoints(
+                                currentX, currentY,
+                                args[i], args[i + 1],
+                                args[i + 2], args[i + 3],
+                                args[i + 4], args[i + 5]
+                            );
+                            points.forEach(p => currentPath.push(p));
+                            currentX = args[i + 4];
+                            currentY = args[i + 5];
+                        }
+                        break;
+                    case 'c':
+                        for (let i = 0; i < args.length; i += 6) {
+                            const points = bezierToPoints(
+                                currentX, currentY,
+                                currentX + args[i], currentY + args[i + 1],
+                                currentX + args[i + 2], currentY + args[i + 3],
+                                currentX + args[i + 4], currentY + args[i + 5]
+                            );
+                            points.forEach(p => currentPath.push(p));
+                            currentX += args[i + 4];
+                            currentY += args[i + 5];
+                        }
+                        break;
+                    case 'Q':
+                        for (let i = 0; i < args.length; i += 4) {
+                            const points = quadBezierToPoints(
+                                currentX, currentY,
+                                args[i], args[i + 1],
+                                args[i + 2], args[i + 3]
+                            );
+                            points.forEach(p => currentPath.push(p));
+                            currentX = args[i + 2];
+                            currentY = args[i + 3];
+                        }
+                        break;
+                    case 'q':
+                        for (let i = 0; i < args.length; i += 4) {
+                            const points = quadBezierToPoints(
+                                currentX, currentY,
+                                currentX + args[i], currentY + args[i + 1],
+                                currentX + args[i + 2], currentY + args[i + 3]
+                            );
+                            points.forEach(p => currentPath.push(p));
+                            currentX += args[i + 2];
+                            currentY += args[i + 3];
+                        }
+                        break;
+                    case 'A':
+                    case 'a':
+                        // Approximate arc with line segments
+                        for (let i = 0; i < args.length; i += 7) {
+                            const endX = cmd === 'A' ? args[i + 5] : currentX + args[i + 5];
+                            const endY = cmd === 'A' ? args[i + 6] : currentY + args[i + 6];
+                            // Simple approximation - just draw line to end
+                            currentPath.push({ x: endX, y: endY });
+                            currentX = endX;
+                            currentY = endY;
+                        }
+                        break;
+                }
+            });
+
+            if (currentPath.length > 0) paths.push(currentPath);
+            return paths;
+        }
+
+        function bezierToPoints(x0, y0, x1, y1, x2, y2, x3, y3, segments = 10) {
+            const points = [];
+            for (let i = 1; i <= segments; i++) {
+                const t = i / segments;
+                const mt = 1 - t;
+                const x = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+                const y = mt * mt * mt * y0 + 3 * mt * mt * t * y1 + 3 * mt * t * t * y2 + t * t * t * y3;
+                points.push({ x, y });
+            }
+            return points;
+        }
+
+        function quadBezierToPoints(x0, y0, x1, y1, x2, y2, segments = 10) {
+            const points = [];
+            for (let i = 1; i <= segments; i++) {
+                const t = i / segments;
+                const mt = 1 - t;
+                const x = mt * mt * x0 + 2 * mt * t * x1 + t * t * x2;
+                const y = mt * mt * y0 + 2 * mt * t * y1 + t * t * y2;
+                points.push({ x, y });
+            }
+            return points;
+        }
+
+        function parsePoints(pointsStr) {
+            if (!pointsStr) return [];
+            const nums = pointsStr.trim().split(/[\s,]+/).map(parseFloat);
+            const points = [];
+            for (let i = 0; i < nums.length; i += 2) {
+                points.push({ x: nums[i], y: nums[i + 1] });
+            }
+            return points;
+        }
+
+        // DXF Parser
+        function parseDXF(content) {
+            const paths = [];
+            const lines = content.split('\n').map(l => l.trim());
+            let i = 0;
+
+            // Find bounds
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+            function updateBounds(x, y) {
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                maxX = Math.max(maxX, x);
+                maxY = Math.max(maxY, y);
+            }
+
+            // Find ENTITIES section
+            while (i < lines.length && lines[i] !== 'ENTITIES') i++;
+            i++;
+
+            while (i < lines.length && lines[i] !== 'ENDSEC') {
+                if (lines[i] === 'LINE') {
+                    i++;
+                    let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+                    while (i < lines.length && lines[i] !== '0') {
+                        const code = parseInt(lines[i]);
+                        const value = lines[i + 1];
+                        if (code === 10) x1 = parseFloat(value);
+                        if (code === 20) y1 = parseFloat(value);
+                        if (code === 11) x2 = parseFloat(value);
+                        if (code === 21) y2 = parseFloat(value);
+                        i += 2;
+                    }
+                    paths.push([{ x: x1, y: y1 }, { x: x2, y: y2 }]);
+                    updateBounds(x1, y1);
+                    updateBounds(x2, y2);
+                } else if (lines[i] === 'LWPOLYLINE' || lines[i] === 'POLYLINE') {
+                    i++;
+                    const points = [];
+                    let closed = false;
+                    let currentX = 0, currentY = 0;
+
+                    while (i < lines.length && lines[i] !== '0') {
+                        const code = parseInt(lines[i]);
+                        const value = lines[i + 1];
+                        if (code === 70) closed = (parseInt(value) & 1) === 1;
+                        if (code === 10) currentX = parseFloat(value);
+                        if (code === 20) {
+                            currentY = parseFloat(value);
+                            points.push({ x: currentX, y: currentY });
+                            updateBounds(currentX, currentY);
+                        }
+                        i += 2;
+                    }
+                    if (closed && points.length > 0) {
+                        points.push({ ...points[0] });
+                    }
+                    if (points.length > 0) paths.push(points);
+                } else if (lines[i] === 'CIRCLE') {
+                    i++;
+                    let cx = 0, cy = 0, r = 0;
+                    while (i < lines.length && lines[i] !== '0') {
+                        const code = parseInt(lines[i]);
+                        const value = lines[i + 1];
+                        if (code === 10) cx = parseFloat(value);
+                        if (code === 20) cy = parseFloat(value);
+                        if (code === 40) r = parseFloat(value);
+                        i += 2;
+                    }
+                    const circlePoints = [];
+                    const segments = 32;
+                    for (let j = 0; j <= segments; j++) {
+                        const angle = (j / segments) * Math.PI * 2;
+                        const px = cx + r * Math.cos(angle);
+                        const py = cy + r * Math.sin(angle);
+                        circlePoints.push({ x: px, y: py });
+                        updateBounds(px, py);
+                    }
+                    paths.push(circlePoints);
+                } else if (lines[i] === 'ARC') {
+                    i++;
+                    let cx = 0, cy = 0, r = 0, startAngle = 0, endAngle = 360;
+                    while (i < lines.length && lines[i] !== '0') {
+                        const code = parseInt(lines[i]);
+                        const value = lines[i + 1];
+                        if (code === 10) cx = parseFloat(value);
+                        if (code === 20) cy = parseFloat(value);
+                        if (code === 40) r = parseFloat(value);
+                        if (code === 50) startAngle = parseFloat(value);
+                        if (code === 51) endAngle = parseFloat(value);
+                        i += 2;
+                    }
+                    const arcPoints = [];
+                    const segments = 16;
+                    let angleDiff = endAngle - startAngle;
+                    if (angleDiff < 0) angleDiff += 360;
+                    for (let j = 0; j <= segments; j++) {
+                        const angle = (startAngle + (j / segments) * angleDiff) * Math.PI / 180;
+                        const px = cx + r * Math.cos(angle);
+                        const py = cy + r * Math.sin(angle);
+                        arcPoints.push({ x: px, y: py });
+                        updateBounds(px, py);
+                    }
+                    paths.push(arcPoints);
+                } else {
+                    i++;
+                }
+            }
+
+            if (minX !== Infinity) {
+                state.bounds = { minX, minY, maxX, maxY };
+            }
+
+            state.originalPaths = paths;
+            state.mergedPaths = [];
+            clearMergedStats();
+            setExportFormat('dxf');
+            updateUI();
+            renderPreview(paths, '#8a8a8f');
+        }
+
+        // Path merging algorithm
+        function mergePaths(paths, tolerance) {
+            if (paths.length === 0) return [];
+
+            const closePaths = document.getElementById('close-paths').checked;
+            const removeDuplicates = document.getElementById('remove-duplicates').checked;
+            const simplify = document.getElementById('simplify-paths').checked;
+
+            // Deep copy paths
+            let workingPaths = paths.map(p => p.map(pt => ({ ...pt })));
+
+            // Remove duplicate segments
+            if (removeDuplicates) {
+                workingPaths = removeDuplicateSegments(workingPaths, tolerance);
+            }
+
+            // Merge connected paths
+            let merged = [];
+            let used = new Set();
+
+            for (let i = 0; i < workingPaths.length; i++) {
+                if (used.has(i)) continue;
+
+                let currentPath = [...workingPaths[i]];
+                used.add(i);
+
+                let changed = true;
+                while (changed) {
+                    changed = false;
+
+                    for (let j = 0; j < workingPaths.length; j++) {
+                        if (used.has(j)) continue;
+
+                        const other = workingPaths[j];
+                        const startCurrent = currentPath[0];
+                        const endCurrent = currentPath[currentPath.length - 1];
+                        const startOther = other[0];
+                        const endOther = other[other.length - 1];
+
+                        // Check all connection possibilities
+                        if (distance(endCurrent, startOther) <= tolerance) {
+                            // Append other to end
+                            currentPath = currentPath.concat(other.slice(1));
+                            used.add(j);
+                            changed = true;
+                        } else if (distance(endCurrent, endOther) <= tolerance) {
+                            // Append reversed other to end
+                            currentPath = currentPath.concat(other.slice(0, -1).reverse());
+                            used.add(j);
+                            changed = true;
+                        } else if (distance(startCurrent, endOther) <= tolerance) {
+                            // Prepend other to start
+                            currentPath = other.slice(0, -1).concat(currentPath);
+                            used.add(j);
+                            changed = true;
+                        } else if (distance(startCurrent, startOther) <= tolerance) {
+                            // Prepend reversed other to start
+                            currentPath = other.slice(1).reverse().concat(currentPath);
+                            used.add(j);
+                            changed = true;
+                        }
+                    }
+                }
+
+                merged.push(currentPath);
+            }
+
+            // Auto-close paths if endpoints are close
+            if (closePaths) {
+                merged = merged.map(path => {
+                    if (path.length > 2) {
+                        const start = path[0];
+                        const end = path[path.length - 1];
+                        if (distance(start, end) <= tolerance * 10 && distance(start, end) > 0) {
+                            return [...path, { ...start }];
+                        }
+                    }
+                    return path;
+                });
+            }
+
+            // Simplify paths (remove collinear points)
+            if (simplify) {
+                merged = merged.map(path => simplifyPath(path, tolerance));
+            }
+
+            return merged;
+        }
+
+        function distance(p1, p2) {
+            return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+        }
+
+        function removeDuplicateSegments(paths, tolerance) {
+            const segments = new Map();
+            const result = [];
+
+            for (const path of paths) {
+                const newPath = [];
+                for (let i = 0; i < path.length; i++) {
+                    const pt = path[i];
+                    if (i === 0) {
+                        newPath.push(pt);
+                        continue;
+                    }
+
+                    const prev = path[i - 1];
+                    const key1 = `${Math.round(prev.x / tolerance)},${Math.round(prev.y / tolerance)}-${Math.round(pt.x / tolerance)},${Math.round(pt.y / tolerance)}`;
+                    const key2 = `${Math.round(pt.x / tolerance)},${Math.round(pt.y / tolerance)}-${Math.round(prev.x / tolerance)},${Math.round(prev.y / tolerance)}`;
+
+                    if (!segments.has(key1) && !segments.has(key2)) {
+                        segments.set(key1, true);
+                        newPath.push(pt);
+                    }
+                }
+                if (newPath.length > 1) result.push(newPath);
+            }
+
+            return result;
+        }
+
+        function simplifyPath(path, tolerance) {
+            if (path.length <= 2) return path;
+
+            const result = [path[0]];
+
+            for (let i = 1; i < path.length - 1; i++) {
+                const prev = result[result.length - 1];
+                const curr = path[i];
+                const next = path[i + 1];
+
+                // Check if point is collinear
+                const cross = (curr.x - prev.x) * (next.y - prev.y) - (curr.y - prev.y) * (next.x - prev.x);
+                if (Math.abs(cross) > tolerance * tolerance) {
+                    result.push(curr);
+                }
+            }
+
+            result.push(path[path.length - 1]);
+            return result;
+        }
+
+        // Export functions
+        function exportSVG(paths) {
+            const { minX, minY, maxX, maxY } = state.bounds;
+            const width = maxX - minX;
+            const height = maxY - minY;
+
+            let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${width} ${height}" width="${width}" height="${height}">
+  <g fill="none" stroke="#000000" stroke-width="0.5">
+`;
+
+            for (const path of paths) {
+                if (path.length < 2) continue;
+                const d = path.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(4)},${p.y.toFixed(4)}`).join(' ');
+                svg += `    <path d="${d}"/>\n`;
+            }
+
+            svg += `  </g>
+</svg>`;
+            return svg;
+        }
+
+        function exportDXF(paths) {
+            let dxf = `0
+SECTION
+2
+HEADER
+0
+ENDSEC
+0
+SECTION
+2
+ENTITIES
+`;
+
+            for (const path of paths) {
+                if (path.length < 2) continue;
+
+                // Export as LWPOLYLINE
+                dxf += `0
+LWPOLYLINE
+8
+0
+90
+${path.length}
+70
+0
+`;
+                for (const pt of path) {
+                    dxf += `10
+${pt.x.toFixed(6)}
+20
+${pt.y.toFixed(6)}
+`;
+                }
+            }
+
+            dxf += `0
+ENDSEC
+0
+EOF`;
+            return dxf;
+        }
+
+        // UI functions
+        function updateUI() {
+            document.getElementById('file-info-section').style.display = 'block';
+            document.getElementById('file-name').textContent = state.fileName;
+            document.getElementById('original-count').textContent = state.originalPaths.length;
+            document.getElementById('empty-state').style.display = 'none';
+            processBtn.disabled = false;
+            document.getElementById('header-status').textContent = `${state.originalPaths.length} paths loaded`;
+        }
+
+        function renderPreview(paths, color) {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (paths.length === 0) return;
+
+            // Calculate transform to fit paths in canvas
+            const { minX, minY, maxX, maxY } = state.bounds;
+            const width = maxX - minX || 1;
+            const height = maxY - minY || 1;
+
+            const padding = 40;
+            const scaleX = (canvas.width - padding * 2) / width;
+            const scaleY = (canvas.height - padding * 2) / height;
+            const scale = Math.min(scaleX, scaleY);
+
+            const offsetX = padding + (canvas.width - padding * 2 - width * scale) / 2;
+            const offsetY = padding + (canvas.height - padding * 2 - height * scale) / 2;
+
+            function transform(pt) {
+                return {
+                    x: offsetX + (pt.x - minX) * scale,
+                    y: offsetY + (pt.y - minY) * scale
+                };
+            }
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            for (const path of paths) {
+                if (path.length < 2) continue;
+
+                ctx.beginPath();
+                const start = transform(path[0]);
+                ctx.moveTo(start.x, start.y);
+
+                for (let i = 1; i < path.length; i++) {
+                    const pt = transform(path[i]);
+                    ctx.lineTo(pt.x, pt.y);
+                }
+                ctx.stroke();
+            }
+        }
+
+        function showToast(message, success = true) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.toggle('success', success);
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Event listeners
+        toleranceInput.addEventListener('input', () => {
+            toleranceValue.textContent = toleranceInput.value;
+        });
+
+        processBtn.addEventListener('click', () => {
+            const tolerance = parseFloat(toleranceInput.value);
+            state.mergedPaths = mergePaths(state.originalPaths, tolerance);
+
+            document.getElementById('merged-count').textContent = state.mergedPaths.length;
+
+            const reduction = ((state.originalPaths.length - state.mergedPaths.length) / state.originalPaths.length * 100).toFixed(1);
+            const badge = document.getElementById('reduction-badge');
+            badge.textContent = `↓ ${reduction}% reduction`;
+            badge.style.display = 'inline-block';
+
+            // Update path list
+            const pathList = document.getElementById('path-list');
+            pathList.innerHTML = state.mergedPaths.slice(0, 50).map((p, i) =>
+                `<div class="path-item"><span>Path ${i + 1}</span><span class="path-item-points">${p.length} pts</span></div>`
+            ).join('');
+            if (state.mergedPaths.length > 50) {
+                pathList.innerHTML += `<div class="path-item"><span>... and ${state.mergedPaths.length - 50} more</span></div>`;
+            }
+            document.getElementById('paths-section').style.display = 'block';
+
+            renderPreview(state.mergedPaths, '#4ade80');
+            exportBtn.disabled = false;
+
+            document.getElementById('header-status').textContent = `Merged to ${state.mergedPaths.length} paths`;
+            showToast(`Merged ${state.originalPaths.length} paths into ${state.mergedPaths.length}`);
+        });
+
+        document.querySelectorAll('.format-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.format-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                state.exportFormat = opt.dataset.format;
+            });
+        });
+
+        exportBtn.addEventListener('click', () => {
+            let content, filename, mimeType;
+
+            if (state.exportFormat === 'svg') {
+                content = exportSVG(state.mergedPaths);
+                filename = state.fileName.replace(/\.[^.]+$/, '_merged.svg');
+                mimeType = 'image/svg+xml';
+            } else {
+                content = exportDXF(state.mergedPaths);
+                filename = state.fileName.replace(/\.[^.]+$/, '_merged.dxf');
+                mimeType = 'application/dxf';
+            }
+
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast(`Exported ${filename}`);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (state.mergedPaths.length > 0) {
+                renderPreview(state.mergedPaths, '#4ade80');
+            } else if (state.originalPaths.length > 0) {
+                renderPreview(state.originalPaths, '#8a8a8f');
+            }
+        });
+    </script>
+</body>
+
+</html>

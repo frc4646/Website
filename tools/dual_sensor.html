@@ -281,27 +281,26 @@ function calculate() {
     wrap1Elem.textContent = wrap1.toFixed(3);
     wrap2Elem.textContent = wrap2.toFixed(3);
 
-    // old "unique range" badge
-    const range = 360 / Math.abs(1 / red1 - 1 / red2);
-    badge.textContent = `Unique Range ≈ ${range.toFixed(1)}°`;
-    badge.className = "badge success";
-
-    // New: absolute uniqueness check
+    // absolute uniqueness check
     // Scale to avoid floating point errors
     const scale = 1000000;
     const w1 = Math.round(wrap1 * scale);
     const w2 = Math.round(wrap2 * scale);
 
-    const rotBeforeRepeat1 = w1 / gcd(w1, w2);
-    const rotBeforeRepeat2 = w2 / gcd(w1, w2);
+    const rotBeforeRepeat1 = w2 / gcd(w1, w2);
+    const rotBeforeRepeat2 = w1 / gcd(w1, w2);
 
     const repeat = lcm(w1, w2) / scale; // degrees until encoder pattern repeats
 
     if (repeat < 360) {
-        badge2.textContent = `Ambiguous! Repeats every ${repeat.toFixed(3)}°\nMotor rotates ${rotBeforeRepeat1}x, Sensor rotates ${rotBeforeRepeat2}x`;
+        badge.textContent = `Ambiguous! Repeats every ${repeat.toFixed(3)}°`;
+        badge2.textContent = `Motor rotates ${rotBeforeRepeat1}x, Sensor rotates ${rotBeforeRepeat2}x`;
+        badge.className = "badge warning";
         badge2.className = "badge warning";
     } else {
-        badge2.textContent = `Absolute position OK (repeat = ${repeat.toFixed(3)}°)`;
+        badge.textContent = `Absolute position OK`;
+        badge2.textContent = `(repeat = ${repeat.toFixed(3)}°)`;
+        badge.className = "badge success";
         badge2.className = "badge success";
     }
 }

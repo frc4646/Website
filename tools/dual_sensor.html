@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dual Sensor Angle Solver</title>
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+    :root {
+        --bg-primary: #0a0a0b;
+        --bg-secondary: #111113;
+        --bg-tertiary: #1a1a1d;
+        --border: #2a2a2f;
+        --text-primary: #e8e8ea;
+        --text-secondary: #8a8a8f;
+        --accent: #e63946;
+        --accent-dim: #c1121f;
+        --success: #4ade80;
+        --warning: #fbbf24;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Space Grotesk', sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    .app-container {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 800px);
+        grid-template-rows: 60px 1fr;
+        min-height: 100vh;
+        gap: 1px;
+        background: var(--border);
+        justify-content: center;
+    }
+
+    header {
+        grid-column: 1 / -1;
+        background: var(--bg-secondary);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    header span { color: var(--accent); }
+
+    aside, main {
+        background: var(--bg-secondary);
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .section {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    .input-group {
+        margin-bottom: 14px;
+    }
+
+    label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        padding: 10px;
+        border-radius: 6px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-dim);
+    }
+
+    .stat-card {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+    }
+
+    .stat-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 18px;
+    }
+
+    .badge {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge.success {
+        background: rgba(74,222,128,0.15);
+        color: var(--success);
+    }
+
+    .badge.warning {
+        background: rgba(251,191,36,0.15);
+        color: var(--warning);
+    }
+
+    .console {
+        background: #0f1115;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+    /* Responsive: stack on narrow screens */
+    @media (max-width: 720px) {
+        .app-container {
+            grid-template-columns: 1fr;
+            grid-template-rows: 60px auto 1fr;
+            justify-content: stretch;
+        }
+
+        aside, main {
+            padding: 16px;
+        }
+
+        input[type="number"], .btn {
+            width: 100%;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        header {
+            padding: 0 16px;
+        }
+    }</style>
+</head>
+
+<body>
+<div class="app-container">
+<header>
+    <h1>Dual Sensor <span>Angle Solver</span></h1>
+</header>
+
+<!-- LEFT: CONFIG -->
+<aside>
+    <div class="section">
+        Uses the CRT (Chinese Remainder Theorem) to combine readings from two angle sensors with different gear reductions to produce a single high-resolution angle measurement.
+    </div>
+    <div class="section">
+        <div class="section-title">System</div>
+        <div class="input-group">
+            <label>Total Reduction (Motor → Output)</label>
+            <input type="number" id="totalReduction" value="50" step="0.01">
+        </div>
+        <div class="input-group">
+            <label>2nd Sensor Reduction (Sensor → Output)</label>
+            <input type="number" id="sensorReduction" value="8" step="0.01">
+        </div>
+        <button class="btn btn-primary" onclick="calculate()">Solve CRT</button>
+    </div>
+</aside>
+
+<!-- CENTER -->
+<main>
+<!-- INFO -->
+    <div class="section">
+        <div class="section-title">Results</div>
+        <div class="stat-card">
+            <div class="stat-label">Motor Wrap (deg)</div>
+            <div class="stat-value" id="wrap1">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Sensor Wrap (deg)</div>
+            <div class="stat-value" id="wrap2">—</div>
+        </div>
+        <div id="badge" class="badge">—</div>
+        <div id="badge2" class="badge">—</div>
+    </div>
+<!-- TEST -->
+    <div class="section">
+        <div class="section-title">CRT Test</div>
+        <div class="input-group">
+            <label>Turret Angle (deg)</label>
+            <input type="number" id="testAngle" value="120" step="15">
+        </div>
+        <button class="btn btn-primary" onclick="test()">Test</button>
+        <div class="console" id="console"></div>
+    </div>
+</main>
+
+</div>
+<script>
+const wrap1Elem = document.getElementById("wrap1");
+const wrap2Elem = document.getElementById("wrap2");
+const badge = document.getElementById("badge");
+const badge2 = document.getElementById("badge2");
+const consoleElem = document.getElementById("console");
+
+function gcd(a, b) {
+    while (b !== 0) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+}
+
+function lcm(a, b) {
+    return a * b / gcd(a, b);
+}
+
+function calculate() {
+    const red1 = Number(totalReduction.value);
+    const red2 = Number(sensorReduction.value);
+
+    const wrap1 = 360 / red1;
+    const wrap2 = 360 / red2;
+
+    wrap1Elem.textContent = wrap1.toFixed(3);
+    wrap2Elem.textContent = wrap2.toFixed(3);
+
+    // old "unique range" badge
+    const range = 360 / Math.abs(1 / red1 - 1 / red2);
+    badge.textContent = `Unique Range ≈ ${range.toFixed(1)}°`;
+    badge.className = "badge success";
+
+    // New: absolute uniqueness check
+    // Scale to avoid floating point errors
+    const scale = 1000000;
+    const w1 = Math.round(wrap1 * scale);
+    const w2 = Math.round(wrap2 * scale);
+
+    const rotBeforeRepeat1 = w1 / gcd(w1, w2);
+    const rotBeforeRepeat2 = w2 / gcd(w1, w2);
+
+    const repeat = lcm(w1, w2) / scale; // degrees until encoder pattern repeats
+
+    if (repeat < 360) {
+        badge2.textContent = `Ambiguous! Repeats every ${repeat.toFixed(3)}°\nMotor rotates ${rotBeforeRepeat1}x, Sensor rotates ${rotBeforeRepeat2}x`;
+        badge2.className = "badge warning";
+    } else {
+        badge2.textContent = `Absolute position OK (repeat = ${repeat.toFixed(3)}°)`;
+        badge2.className = "badge success";
+    }
+}
+
+function test() {
+    const trueAngle = Number(document.getElementById('testAngle').value);
+    const red1 = Number(totalReduction.value);
+    const red2 = Number(sensorReduction.value);
+
+    const wrap1 = 360 / red1;
+    const wrap2 = 360 / red2;
+
+    const enc1 = ((trueAngle % wrap1) + wrap1) % wrap1;
+    const enc2 = ((trueAngle % wrap2) + wrap2) % wrap2;
+
+    let best = null;
+    for (let a = 0; a <= 360 * 10; a += 0.01) {
+        const e1 = ((a % wrap1) + wrap1) % wrap1;
+        const e2 = ((a % wrap2) + wrap2) % wrap2;
+        const err = Math.abs(e1 - enc1) + Math.abs(e2 - enc2);
+        if (!best || err < best.err) best = { angle: a, err };
+    }
+
+    const error = best.angle - trueAngle;
+
+    let out = "";
+    out += `Motor encoder:  ${enc1.toFixed(3)}° / ${wrap1.toFixed(3)}°\n`;
+    out += `Sensor encoder: ${enc2.toFixed(3)}° / ${wrap2.toFixed(3)}°\n`;
+    out += `Solved angle:   ${best.angle.toFixed(3)}°\n`;
+    out += `True angle:     ${trueAngle.toFixed(3)}°\n`;
+    out += `Error:          ${error.toFixed(4)}°\n`;
+    out += `-------------------------------\n`;
+
+    consoleElem.textContent = out + consoleElem.textContent;
+    consoleElem.scrollTop = consoleElem.scrollHeight;
+}
+
+// run initially
+calculate();
+</script>
+
+</body>
+</html>

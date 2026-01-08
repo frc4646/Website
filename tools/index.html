@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools — Index</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+    :root {
+        --bg-primary: #0a0a0b;
+        --bg-secondary: #111113;
+        --bg-tertiary: #1a1a1d;
+        --border: #2a2a2f;
+        --text-primary: #e8e8ea;
+        --text-secondary: #8a8a8f;
+        --accent: #e63946;
+        --accent-dim: #c1121f;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Space Grotesk', sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    .app-container {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 800px);
+        grid-template-rows: 60px 1fr;
+        min-height: 100vh;
+        gap: 1px;
+        background: var(--border);
+        justify-content: center;
+    }
+
+    header {
+        grid-column: 1 / -1;
+        background: var(--bg-secondary);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    header h1 { font-size: 18px; font-weight: 700; }
+    header span { color: var(--accent); }
+
+    aside, main {
+        background: var(--bg-secondary);
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .section { margin-bottom: 24px; }
+
+    .section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tool-card {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+
+    .tool-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+    }
+
+    a.link {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .tool-desc { color: var(--text-secondary); font-size: 13px; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 13px; margin-top: 6px; }
+
+    /* Responsive
+    -------------------------------------------------- */
+    @media (max-width: 720px) {
+        .app-container { grid-template-columns: 1fr; grid-template-rows: 60px auto 1fr; justify-content: stretch; }
+        aside, main { padding: 16px; }
+        .section { margin-bottom: 18px; }
+        header { padding: 0 16px; }
+    }
+</style>
+</head>
+<body>
+<div class="app-container">
+<header>
+    <h1>Tools <span>Index</span></h1>
+</header>
+
+<aside>
+    <div class="section">
+        <div class="section-title">Overview</div>
+        <p style="color:var(--text-secondary);font-size:13px;">A small collection of utility pages for our FRC team.</p>
+    </div>
+</aside>
+
+<main>
+    <div class="section">
+        <div class="section-title">Available Tools</div>
+
+        <div class="tool-card">
+            <div class="tool-title"><a class="link" href="https://scout.team4646.org">Scouting App</a></div>
+            <div class="tool-desc">Scout teams and matches during an event.</div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-title"><a class="link" href="path_merge.html">Path Merge</a></div>
+            <div class="tool-desc">Utility for merging and SVG/DXF paths for the XCarve CNC.</div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-title"><a class="link" href="dual_sensor.html">Dual Sensor Angle Solver</a></div>
+            <div class="tool-desc">Compute motor and sensor wrap angles for a dual sensor using CRT and estimate the unique angle range.</div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div><a class="link" href="/">Back to site</a></div>
+    </footer>
+</main>
+
+</div>
+</body>
+</html>

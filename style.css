@@ -10,6 +10,50 @@
 
 /* Global styles */
 
+/* FONTS */
+
+.quantico-regular {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.quantico-bold {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.quantico-regular-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.quantico-bold-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.jersey-10-regular {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.handjet-<uniquifier> {
+  font-family: "Handjet", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "ELGR" 1,
+    "ELSH" 2;
+}
+
+/* other things */
+
 body {
   background-color: black;
       background-image: url('images/background.gif');
@@ -18,6 +62,7 @@ body {
 
 h1 {
   font-size: 4em;
+  font-family: "Jersey 10";
   color: black;
   text-align: center;
   margin: 20px auto;
@@ -26,18 +71,32 @@ h1 {
 h2 {
   text-align: center;
   font-size: 2em;
+  font-family: "Jersey 10";
   margin: 10px auto;
 }
 
 h3 {
   text-align: left;
-  font-size: 2em;
+  font-size: 3em;
+  font-family: "Handjet";
 }
 
 .norm-text {
   color: white;
   text-align: justify;
   font-size: 20px;
+  font-family: "Quantico";
+}
+
+.suits {
+  font-size: 2rem;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .suits {
+    display: none;
+  }
 }
 
 .h-text {
@@ -51,15 +110,92 @@ h3 {
 
 a {
   color: red;
+  
 }
 
 .border-space {
   margin: 10px 40px 40px 40px;
 }
 
-img .art {
-  
+/* ART IMAGES */
+div.scroll-container {
+  background-color: transparent;
+  display: flex;
+  flex-wrap: nowrap; 
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 10px;
+  max-width: 100%;    
+  /* hide scrollbar */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/old Edge */ 
+  /* scroll behavior */
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
 }
+
+div.scroll-container::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari, Edge */
+}
+
+div.scroll-container img {
+  max-height: 500px;
+  width: auto;
+  padding: 10px;
+  flex-shrink: 0; 
+  scroll-snap-align: start;
+}
+
+.scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scroll-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-right: 10px;
+  color: white;
+  font-size: 4em;
+  font-family: "Handjet";
+}
+
+.scroll-label-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .scroll-wrapper {
+    flex-direction: column;
+  }
+
+  .scroll-label {
+    display: none;
+  }
+
+  .scroll-label-mobile {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: white;
+    font-family: "Handjet";
+  }
+
+  div.scroll-container img {
+    max-height: 200px;
+    flex-shrink: 0;
+  }
+
+  div.scroll-container {
+    flex-wrap: nowrap;      
+    max-width: 100vw;       
+  }
+}
+/* END ART */
 
 .sponsors{
   height: 100px;
@@ -96,6 +232,7 @@ img .art {
     /* Push the footer right to accommodate the navbar width */
     width: calc(100% - 200px);
     /* Ensure the footer takes up the remaining space */
+    font-family: "Handjet";
   }
 }
 
@@ -109,6 +246,35 @@ img .art {
     width: 50vw;
     height: 40vw;
 }
+
+/* PDF EMBED */
+
+.pdf-link-card a {
+  text-decoration: none;
+}
+
+.pdf-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  background-color: #111;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.pdf-card:hover {
+  transform: scale(1.03);
+}
+
+.pdf-icon {
+  width: 40px;
+  height: 40px;
+}
+
+/* END PDF */
 
 .spacer {
     width: 2vw;
@@ -218,13 +384,14 @@ img .art {
 /* Navbar list item styling */
 .navbar li {
   text-align: center;
+  font-family: "Handjet";
   padding: 15px;
 }
 
 .navbar li a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 1.5em;
   display: block;
 }
 
@@ -387,7 +554,8 @@ img {
   flex-wrap: wrap;
   gap: 15px;
   padding: 0;
-  font-size: 2.5em;
+  font-size: 2em;
+  font-family: "Handjet";
   justify-content: center;
   /* Center the buttons */
 }
@@ -419,14 +587,6 @@ img {
   overflow: hidden;
 }
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  /* Makes the gallery responsive */
-  gap: 20px;
-  /* Adds space between the images */
-}
-
 .container {
   position: relative;
   width: 100%;
@@ -454,7 +614,8 @@ img {
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 25px;
+  font-size: 2em;
+  font-family: "Handjet";
   text-align: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
   background-color: rgba(0, 0, 0, 0.5);
@@ -533,13 +694,17 @@ img {
   }
 }
 
+
 .inline_pdf_small {
-  width: 60%;
-  max-width: 60%;
-  height: auto;
+  width: 80%;           /* horizontal padding */
+  max-width: 80%;
+  height: 90vh;         /* 90% of the viewport height */
   margin: 0 auto;
   display: block;
+  border: 2px solid black; /* optional, looks nice */
 }
+
+
 
 @media screen and (max-width: 600px) {
   .inline_pdf_small {

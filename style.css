@@ -110,7 +110,6 @@ h3 {
 
 a {
   color: red;
-  
 }
 
 .border-space {
@@ -178,7 +177,7 @@ div.scroll-container img {
 
   .scroll-label-mobile {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 8px;
     color: white;
@@ -229,10 +228,7 @@ div.scroll-container img {
 
   footer {
     margin-left: 200px;
-    /* Push the footer right to accommodate the navbar width */
     width: calc(100% - 200px);
-    /* Ensure the footer takes up the remaining space */
-    font-family: "Handjet";
   }
 }
 
@@ -498,7 +494,6 @@ div.scroll-container img {
   overflow: hidden;
   z-index: 1;
   max-width: 100%;
-  /* Ensure it fits the screen */
 }
 
 .video-container iframe {
@@ -516,17 +511,15 @@ footer {
   font-size: 0.9em;
   color: white;
   width: 100%;
+  font-family: "Handjet";
 }
 
 /* Media Queries for large screens (desktop) */
 @media screen and (min-width: 769px) {
   footer {
     margin-left: 200px;
-    /* Push the footer right to accommodate the navbar width */
     text-align: center;
-    /* Keep the text centered */
     width: calc(100% - 200px);
-    /* Ensure the footer takes up the remaining space */
   }
 }
 
@@ -621,6 +614,11 @@ img {
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: 0.5s ease;
+  flex-direction: column;
+}
+
+.overlay p {
+  margin: 0;
 }
 
 .container:hover .overlay {

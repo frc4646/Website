@@ -398,7 +398,8 @@
             margin-bottom: 12px;
         }
 
-        .format-option {
+        .format-option,
+        .unit-option {
             padding: 10px;
             background: var(--bg-tertiary);
             border: 2px solid var(--border);
@@ -408,16 +409,19 @@
             transition: all 0.15s ease;
         }
 
-        .format-option:hover {
+        .format-option:hover,
+        .unit-option:hover {
             border-color: var(--accent-dim);
         }
 
-        .format-option.active {
+        .format-option.active,
+        .unit-option.active {
             border-color: var(--accent);
             background: rgba(255, 107, 53, 0.1);
         }
 
-        .format-option span {
+        .format-option span,
+        .unit-option span {
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             font-weight: 600;
@@ -441,6 +445,19 @@
         .file-size {
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        .file-units,
+        .file-dimensions {
+            font-size: 12px;
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        .file-units span,
+        .file-dimensions span {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
         }
 
         .empty-state {
@@ -606,6 +623,8 @@
                 <div class="file-info">
                     <div class="file-name" id="file-name">—</div>
                     <div class="file-size" id="file-size">—</div>
+                    <div class="file-units" id="file-units" style="display: none;">Units: <span id="file-units-value">—</span></div>
+                    <div class="file-dimensions" id="file-dimensions" style="display: none;">Size: <span id="file-dimensions-value">—</span></div>
                 </div>
             </div>
 
@@ -709,6 +728,14 @@
                         <span>.DXF</span>
                     </div>
                 </div>
+                <div class="format-select">
+                    <div class="unit-option active" data-unit="mm">
+                        <span>mm</span>
+                    </div>
+                    <div class="unit-option" data-unit="in">
+                        <span>inch</span>
+                    </div>
+                </div>
                 <button class="btn btn-secondary" id="export-btn" disabled>
                     <svg viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -740,6 +767,8 @@
             fileName: '',
             fileType: '',
             exportFormat: 'svg',
+            units: 'mm',
+            detectedUnits: null,
             bounds: { minX: 0, minY: 0, maxX: 100, maxY: 100 }
         };
 
@@ -805,6 +834,19 @@
             if (viewBox) {
                 const [minX, minY, width, height] = viewBox.split(/[\s,]+/).map(parseFloat);
                 state.bounds = { minX, minY, maxX: minX + width, maxY: minY + height };
+            }
+
+            // Try to detect units from width/height attributes
+            const widthAttr = svg.getAttribute('width') || '';
+            const heightAttr = svg.getAttribute('height') || '';
+            if (widthAttr.includes('mm') || heightAttr.includes('mm')) {
+                state.detectedUnits = 'mm';
+            } else if (widthAttr.includes('in') || heightAttr.includes('in')) {
+                state.detectedUnits = 'in';
+            } else if (widthAttr.includes('cm') || heightAttr.includes('cm')) {
+                state.detectedUnits = 'cm';
+            } else {
+                state.detectedUnits = null;
             }
 
             // Parse path elements
@@ -1094,6 +1136,21 @@
             // Find bounds
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
+            // Parse header for units
+            let detectedUnits = null;
+            for (let j = 0; j < lines.length && lines[j] !== 'ENDSEC'; j++) {
+                if (lines[j] === '$INSUNITS' && lines[j + 1] === '70') {
+                    const unitCode = parseInt(lines[j + 2]);
+                    // DXF INSUNITS: 1 = inches, 4 = millimeters, 5 = centimeters, 6 = meters
+                    if (unitCode === 1) detectedUnits = 'in';
+                    else if (unitCode === 4) detectedUnits = 'mm';
+                    else if (unitCode === 5) detectedUnits = 'cm';
+                    else if (unitCode === 6) detectedUnits = 'm';
+                    break;
+                }
+            }
+            state.detectedUnits = detectedUnits;
+
             function updateBounds(x, y) {
                 minX = Math.min(minX, x);
                 minY = Math.min(minY, y);
@@ -1354,8 +1411,15 @@
             const width = maxX - minX;
             const height = maxY - minY;
 
+            // Easel uses 96 PPI. To get correct physical size:
+            // - Keep coordinates as-is (in mm or inches)
+            // - Set width/height in inches (Easel's native unit)
+            // - viewBox maps to the width/height, so coordinates scale correctly
+            const widthInches = state.units === 'in' ? width : width / 25.4;
+            const heightInches = state.units === 'in' ? height : height / 25.4;
+
             let svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${width} ${height}" width="${width}" height="${height}">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${width} ${height}" width="${widthInches}in" height="${heightInches}in">
   <g fill="none" stroke="#000000" stroke-width="0.5">
 `;
 
@@ -1371,10 +1435,44 @@
         }
 
         function exportDXF(paths) {
+            const { minX, minY, maxX, maxY } = state.bounds;
+            // DXF INSUNITS: 1 = inches, 4 = millimeters
+            const insunits = state.units === 'in' ? 1 : 4;
+            // MEASUREMENT: 0 = imperial, 1 = metric
+            const measurement = state.units === 'in' ? 0 : 1;
+
             let dxf = `0
 SECTION
 2
 HEADER
+9
+$ACADVER
+1
+AC1014
+9
+$INSUNITS
+70
+${insunits}
+9
+$MEASUREMENT
+70
+${measurement}
+9
+$EXTMIN
+10
+${minX.toFixed(6)}
+20
+${minY.toFixed(6)}
+30
+0.0
+9
+$EXTMAX
+10
+${maxX.toFixed(6)}
+20
+${maxY.toFixed(6)}
+30
+0.0
 0
 ENDSEC
 0
@@ -1420,6 +1518,39 @@ EOF`;
             document.getElementById('empty-state').style.display = 'none';
             processBtn.disabled = false;
             document.getElementById('header-status').textContent = `${state.originalPaths.length} paths loaded`;
+
+            // Show detected units if available
+            const fileUnitsEl = document.getElementById('file-units');
+            const fileUnitsValueEl = document.getElementById('file-units-value');
+            if (state.detectedUnits) {
+                fileUnitsEl.style.display = 'block';
+                fileUnitsValueEl.textContent = state.detectedUnits;
+                // Auto-select the detected unit for export
+                setExportUnits(state.detectedUnits === 'in' ? 'in' : 'mm');
+            } else {
+                fileUnitsEl.style.display = 'none';
+            }
+
+            // Show dimensions
+            const fileDimensionsEl = document.getElementById('file-dimensions');
+            const fileDimensionsValueEl = document.getElementById('file-dimensions-value');
+            const { minX, minY, maxX, maxY } = state.bounds;
+            const width = maxX - minX;
+            const height = maxY - minY;
+            if (width > 0 && height > 0) {
+                fileDimensionsEl.style.display = 'block';
+                const unit = state.detectedUnits || '';
+                fileDimensionsValueEl.textContent = `${width.toFixed(2)} × ${height.toFixed(2)} ${unit}`;
+            } else {
+                fileDimensionsEl.style.display = 'none';
+            }
+        }
+
+        function setExportUnits(unit) {
+            state.units = unit;
+            document.querySelectorAll('.unit-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.unit === unit);
+            });
         }
 
         function renderPreview(paths, color) {
@@ -1517,6 +1648,14 @@ EOF`;
                 document.querySelectorAll('.format-option').forEach(o => o.classList.remove('active'));
                 opt.classList.add('active');
                 state.exportFormat = opt.dataset.format;
+            });
+        });
+
+        document.querySelectorAll('.unit-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.unit-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                state.units = opt.dataset.unit;
             });
         });
 
